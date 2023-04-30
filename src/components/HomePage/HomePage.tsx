@@ -1,93 +1,106 @@
-import React, { useEffect, useRef, useState } from "react";
+/* eslint-disable jsx-a11y/alt-text */
+/* eslint-disable @next/next/no-img-element */
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { HeaderWithRef as Header } from "../Header/Header";
 import Products from "../Product/Products";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import Background from "../Background";
+import Product from "../Product";
 
 interface IHomePage {
   data: any;
 }
 
 export default function HomePage({ data }: IHomePage) {
+  const [activeProduct, setActiveProduct] = useState<number | null>(1);
+  const [selectedProduct, setSelectedProduct] = useState<any>(1);
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [activeImage, setactiveImage] = useState(null);
+
   const headerRef = useRef<any>(null);
-  const [activeProduct, setActiveProduct] = useState<number>(1);
   const bgImages = useRef<any>(null);
-  const [isFinishedLoading, setisFinishedLoading] = useState(false);
 
   const handleProductChange = (i: number) => {
     setActiveProduct(i);
   };
 
-  useEffect(() => {
-    data.data.map((dataItem: any, i: number) => {
-      const { imageUrl } = dataItem.attributes;
+  const handleProductSelection = (product: any) => {
+    setSelectedProduct(product);
+  };
 
+  const handleCategoryChange = (category: string) => {
+    setActiveProduct(null);
+    setActiveCategory(category);
+  };
+
+  const assignBgImages = useCallback(() => {
+    data.map(({ attributes: { imageUrl } }: any, i: number) => {
       bgImages.current = {
         ...bgImages.current,
         [i]: { imageUrl },
       };
     });
+  }, [data]);
 
-    setTimeout(() => {
-      setisFinishedLoading(true);
-    }, 2000);
-  }, []);
+  const imageSrc = useMemo(() => {
+    const firstOnTheLine = data.find(
+      ({ attributes: { contentType } }) => contentType === activeCategory
+    );
+
+    const firstProductUrl = firstOnTheLine.attributes.imageUrl;
+    const activeItemUrl =
+      bgImages.current && bgImages?.current[activeProduct as number]?.imageUrl;
+
+    return activeProduct ? activeItemUrl : firstProductUrl;
+  }, [activeCategory, activeProduct, data]);
 
   useEffect(() => {
-    console.log(bgImages.current[activeProduct].imageUrl);
-  }, [activeProduct]);
+    if (!headerRef.current) return;
 
-  useEffect(() => {
-    setTimeout(() => {
-      let headerRect = headerRef.current.getBoundingClientRect();
-      let targets = [...(document.getElementsByClassName("block") as any)];
+    assignBgImages();
 
-      let cb = (entries: any) => {
-        entries.forEach((entry: any) => {
-          let isoverlap = entry.boundingClientRect.y <= headerRect.bottom - 5;
-          if (isoverlap) {
-            console.log(entry.boundingClientRect.y);
-            console.log(headerRect.bottom);
-            const num = parseInt(entry.target.id);
-            setActiveProduct((index) => (index !== num ? num + 1 : num + 1));
-          }
-        });
-      };
+    let headerRect = headerRef.current.getBoundingClientRect();
+    let targets = [...(document.getElementsByClassName("block") as any)];
 
-      let Iobserver = new IntersectionObserver(cb, {});
-      targets.forEach((target) => Iobserver.observe(target));
+    let cb = (entries: any) => {
+      entries.forEach((entry: any) => {
+        let isoverlap = entry.boundingClientRect.y <= headerRect.bottom - 5;
+        if (isoverlap) {
+          const num = parseInt(entry.target.id);
+          setActiveProduct((index) => (index !== num ? num + 1 : num + 1));
+        }
+      });
+    };
 
-      return () => {
-        targets.forEach((target) => Iobserver.unobserve(target));
-      };
-    }, 2000);
-  }, []);
+    let Iobserver = new IntersectionObserver(cb, {});
+    targets.forEach((target) => Iobserver.observe(target));
+
+    return () => {
+      targets.forEach((target) => Iobserver.unobserve(target));
+    };
+  }, [headerRef.current]);
 
   return (
     <motion.div className="relative w-screen h-screen ">
-      <Header ref={headerRef} />
+      <Header handleClick={handleCategoryChange} ref={headerRef} />
+      <motion.div className="fixed w-3/6 h-full top-0 left-0 opacity-90  bg-gradient-to-r pl-9 from-40% via-80% from-black to-transparent z-0 " />
+
       <Products
         data={data}
+        activeCategory={activeCategory}
         activeProduct={activeProduct}
         handleProductChange={handleProductChange}
+        handleProductSelection={handleProductSelection}
       />
-
-      <motion.div
-        animate={{
-          scale: 1,
-          transition: { duration: 2, ease: "circIn" },
-        }}
-        initial={{ scale: 1.2 }}
-        className={`fixed -z-10 w-screen h-screen origin-top-right bg-center bg-cover  ]`}
-      >
-        <img
-          src={
-            isFinishedLoading
-              ? bgImages.current[activeProduct].imageUrl
-              : "http://localhost:1337/uploads/janos_venczak_Em_De2_Qylec_I_unsplash_cfcfda2cd5.jpg"
-          }
-        />
-      </motion.div>
+      {/* <Product /> */}
+      <Background activeImg={imageSrc} />
     </motion.div>
   );
 }

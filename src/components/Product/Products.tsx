@@ -1,20 +1,31 @@
-import { useScroll, useSpring, useTransform, motion } from "framer-motion";
+import {
+  useScroll,
+  useSpring,
+  useTransform,
+  motion,
+  delay,
+  AnimatePresence,
+} from "framer-motion";
 import React, { useRef } from "react";
 import { boxVariant, listVariant } from "./animations";
 
 interface IProduct {
-  activeProduct: number;
+  activeProduct: number | null;
+  activeCategory: string | null;
   handleProductChange: (i: number) => void;
   data: any;
+  handleProductSelection: (product: any) => void;
 }
 
 export default function Products({
   activeProduct,
+  activeCategory,
   handleProductChange,
+  handleProductSelection,
   data,
 }: IProduct) {
   const scrollingContainerRef = useRef<null | HTMLDivElement>(null);
-  console.log(data);
+  const containerRef = useRef();
 
   const { scrollY } = useScroll({ container: scrollingContainerRef });
 
@@ -33,7 +44,7 @@ export default function Products({
       <div>
         <motion.div
           style={{ translateY }}
-          className="absolute w-6/12   opacity-90  bg-gradient-to-r pl-9 from-50% via-60% from-black to-transparent"
+          className="absolute w-4/12 min-h-full pl-10 "
         >
           <motion.div
             variants={boxVariant}
@@ -41,32 +52,43 @@ export default function Products({
             initial="hidden"
             className="mt-48"
           >
-            {data.data.map((dataItem: any, i: number) => {
-              const { headline, subText } = dataItem.attributes;
+            <AnimatePresence mode="wait">
+              {data.map((dataItem: any, i: number) => {
+                const { headline, subText, contentType } = dataItem.attributes;
 
-              let isActiveProduct = i === activeProduct;
-              return (
-                <motion.div
-                  variants={listVariant}
-                  onHoverStart={() => handleProductChange(i)}
-                  id={`${i + 1}`}
-                  className="box-border relative flex items-end block w-full text-white opacity-100 h-28 "
-                  key={i}
-                >
-                  <motion.div>
-                    <h1 className="text-4xl font-light "> {headline}</h1>
-                    <span className="font-thin">{subText}</span>
+                let isActiveProduct = i === activeProduct;
+                let contentCategory =
+                  !activeCategory || contentType === activeCategory;
 
-                    {isActiveProduct && (
-                      <motion.div
-                        className="absolute w-2 h-2 bg-white rounded-full bottom-9 -left-5"
-                        layoutId="underline"
-                      />
-                    )}
-                  </motion.div>
-                </motion.div>
-              );
-            })}
+                return (
+                  contentCategory && (
+                    <motion.div
+                      variants={listVariant}
+                      exit={{ opacity: 0 }}
+                      onHoverStart={() => handleProductChange(i)}
+                      onClick={() => handleProductSelection(dataItem)}
+                      id={`${i + 1}`}
+                      className="box-border relative flex items-end block w-full text-white opacity-100 h-28 "
+                      key={i}
+                      layout
+                    >
+                      <motion.div>
+                        <h1 className="text-4xl font-light "> {headline}</h1>
+                        <span className="font-thin">{subText}</span>
+
+                        {isActiveProduct && (
+                          <motion.div
+                            className="absolute w-2 h-2 bg-white rounded-full bottom-9 -left-5"
+                            transition={{ duration: 0.2 }}
+                            layoutId="underline"
+                          />
+                        )}
+                      </motion.div>
+                    </motion.div>
+                  )
+                );
+              })}
+            </AnimatePresence>
           </motion.div>
         </motion.div>
       </div>
