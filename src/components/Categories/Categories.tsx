@@ -10,23 +10,28 @@ const Categories = ({ handleClick }: ICategories) => {
   const [hoveredCategory, setHoveredCategory] = useState<number | null>(null);
   const [isActiveCategory, setisActiveCategory] = useState<number | null>(null);
 
+  const handleCategoryChange = (category: string, i: number) => {
+    handleClick(category);
+    setisActiveCategory(i);
+  };
+
   return (
     <div className="absolute right-0 flex items-center justify-between w-2/12 h-full ">
       <div className="flex items-center justify-center flex-1 w-2/6 ">
         {["Theatre", "Movie", "Interactive", "Tv"].map((category, i) => {
           const isHoveredCategory = i === hoveredCategory;
+
           return (
             <motion.div
               onHoverStart={() => setHoveredCategory(i)}
               onHoverEnd={() => setHoveredCategory(null)}
-              onClick={() => setisActiveCategory(i)}
+              onClick={() => handleCategoryChange(category, i)}
               key={i}
-              className="relative flex justify-center w-1/6 "
+              className="relative flex justify-center w-1/6 cursor-pointer "
             >
               <img
-                onClick={() => handleClick(category)}
                 className={`w-4 h-4 
-                transition-all ease-in relative z-10 duration-200
+                transition-all ease-in relative z-[5] duration-200
                 ${
                   isHoveredCategory
                     ? "opacity-100"
@@ -37,17 +42,19 @@ const Categories = ({ handleClick }: ICategories) => {
                 src={`/${category.toLocaleLowerCase()}.svg`}
                 alt=""
               />
+
               {isHoveredCategory && (
                 <motion.span
                   layout
                   transition={{ easings: "ease-in" }}
                   animate={{ opacity: 1, y: 5 }}
                   initial={{ opacity: 0, y: 15 }}
-                  className="absolute px-2 text-xs text-center text-black transform rounded-md z top-8 bg-slate-50"
+                  className="absolute px-2 text-xs text-center text-black transform rounded-md top-8 bg-slate-50"
                 >
                   {category}
                 </motion.span>
               )}
+
               {isActiveCategory === i && (
                 <motion.span
                   key={"motionkey"}

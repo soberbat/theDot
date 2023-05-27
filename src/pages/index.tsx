@@ -35,7 +35,6 @@ export async function getServerSideProps() {
 }
 
 export default function Home({ pageData }: { pageData: any }) {
-  console.log(pageData);
   return (
     <>
       <Head>

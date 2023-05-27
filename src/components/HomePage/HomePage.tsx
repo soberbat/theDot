@@ -9,79 +9,67 @@ import React, {
 } from "react";
 import { HeaderWithRef as Header } from "../Header/Header";
 import Products from "../Product/Products";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import Background from "../Background";
 import Product from "../Product";
+import Gradient from "../Gradient";
+import { Content } from "@/utils/types/Types";
+import DetectIntersect from "@/utils/types/IntersectionDetector";
+import useImageSource from "@/utils/hooks/useImageSource";
+import Slider from "../Slider";
 
 interface IHomePage {
-  data: any;
+  data: Content[];
 }
 
 export default function HomePage({ data }: IHomePage) {
-  const [activeProduct, setActiveProduct] = useState<number | null>(1);
-  const [selectedProduct, setSelectedProduct] = useState<any>(1);
-  const [activeCategory, setActiveCategory] = useState<string | null>(null);
-  const [activeImage, setactiveImage] = useState(null);
-
   const headerRef = useRef<any>(null);
   const bgImages = useRef<any>(null);
 
-  const handleProductChange = (i: number) => {
-    setActiveProduct(i);
-  };
+  const [activeProduct, setActiveProduct] = useState<number | null>(1);
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [isProductSlideVisible, setIsProductSlideVisible] = useState(false);
 
-  const handleProductSelection = (product: any) => {
-    setSelectedProduct(product);
-  };
+  const imageSrc = useImageSource(
+    data,
+    activeProduct,
+    activeCategory,
+    bgImages.current
+  );
 
-  const handleCategoryChange = (category: string) => {
-    setActiveProduct(null);
-    setActiveCategory(category);
-  };
-
-  const assignBgImages = useCallback(() => {
-    data.map(({ attributes: { imageUrl } }: any, i: number) => {
-      bgImages.current = {
-        ...bgImages.current,
-        [i]: { imageUrl },
-      };
-    });
+  bgImages.current = useMemo(() => {
+    return data.map(({ attributes: { imageUrl } }, i: number) => ({
+      imageUrl,
+    }));
   }, [data]);
 
-  const imageSrc = useMemo(() => {
-    const firstOnTheLine = data.find(
-      ({ attributes: { contentType } }) => contentType === activeCategory
-    );
+  const handleProductChange = useCallback((i: number) => {
+    setActiveProduct(i);
+  }, []);
 
-    const firstProductUrl = firstOnTheLine.attributes.imageUrl;
-    const activeItemUrl =
-      bgImages.current && bgImages?.current[activeProduct as number]?.imageUrl;
+  const handleGoBack = useCallback(() => {
+    setSelectedProduct(null);
+  }, []);
 
-    return activeProduct ? activeItemUrl : firstProductUrl;
-  }, [activeCategory, activeProduct, data]);
+  const handleSlideVisibility = useCallback((isVisible: boolean) => {
+    setIsProductSlideVisible(isVisible);
+  }, []);
+
+  const handleProductSelection = useCallback((content: Content) => {
+    setSelectedProduct(content);
+  }, []);
+
+  const handleCategoryChange = useCallback((category: string) => {
+    setActiveProduct(null);
+    setActiveCategory(category);
+  }, []);
 
   useEffect(() => {
     if (!headerRef.current) return;
 
-    assignBgImages();
-
-    let headerRect = headerRef.current.getBoundingClientRect();
-    let targets = [...(document.getElementsByClassName("block") as any)];
-
-    let cb = (entries: any) => {
-      entries.forEach((entry: any) => {
-        let isoverlap = entry.boundingClientRect.y <= headerRect.bottom - 5;
-        if (isoverlap) {
-          const num = parseInt(entry.target.id);
-          setActiveProduct((index) => (index !== num ? num + 1 : num + 1));
-        }
-      });
-    };
-
-    let Iobserver = new IntersectionObserver(cb, {});
-    targets.forEach((target) => Iobserver.observe(target));
-
+    const { targets, Iobserver } = DetectIntersect(headerRef, setActiveProduct);
     return () => {
       targets.forEach((target) => Iobserver.unobserve(target));
     };
@@ -90,17 +78,42 @@ export default function HomePage({ data }: IHomePage) {
   return (
     <motion.div className="relative w-screen h-screen ">
       <Header handleClick={handleCategoryChange} ref={headerRef} />
-      <motion.div className="fixed w-3/6 h-full top-0 left-0 opacity-90  bg-gradient-to-r pl-9 from-40% via-80% from-black to-transparent z-0 " />
 
-      <Products
-        data={data}
-        activeCategory={activeCategory}
-        activeProduct={activeProduct}
-        handleProductChange={handleProductChange}
-        handleProductSelection={handleProductSelection}
+      <Gradient />
+      <Background
+        isProductSelected={selectedProduct ?? false}
+        activeImg={imageSrc}
       />
-      {/* <Product /> */}
-      <Background activeImg={imageSrc} />
+
+      <AnimatePresence mode="wait">
+        {!selectedProduct ? (
+          <Products
+            key={"92819"}
+            data={data}
+            activeProduct={activeProduct}
+            activeCategory={activeCategory}
+            handleProductChange={handleProductChange}
+            handleProductSelection={handleProductSelection}
+          />
+        ) : (
+          <Product
+            key={"22828"}
+            content={selectedProduct}
+            handleGoBack={handleGoBack}
+            changeSlideVisibility={handleSlideVisibility}
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {isProductSlideVisible && (
+          <Slider
+            key={"1414"}
+            content={selectedProduct}
+            changeSlideVisibility={handleSlideVisibility}
+          />
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }

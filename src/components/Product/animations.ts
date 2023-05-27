@@ -4,9 +4,10 @@ export const boxVariant = {
   },
   visible: {
     x: 0, // bring it back to nrmal
-    transition: {
-      delay: 0.5,
 
+    transition: {
+      duration: 0.1,
+      delay: 0,
       when: "beforeChildren", //use this instead of delay
       staggerChildren: 0.1, //apply stagger on the parent tag
     },

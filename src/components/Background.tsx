@@ -5,9 +5,10 @@ import React, { useCallback, useEffect } from "react";
 
 interface IBackground {
   activeImg: string;
+  isProductSelected: boolean | string;
 }
 
-const Background = ({ activeImg }: IBackground) => {
+const Background = ({ activeImg, isProductSelected }: IBackground) => {
   const controls = useAnimation();
   useEffect(() => {
     sequence();
@@ -20,16 +21,16 @@ const Background = ({ activeImg }: IBackground) => {
   return (
     <motion.div
       animate={{
-        scale: 1,
-        transition: { duration: 2, ease: "circIn" },
+        scale: isProductSelected ? 1.5 : 1.1,
+        transition: { duration: 0.5, ease: "circOut" },
       }}
-      initial={{ scale: 1.2 }}
-      className={`fixed -z-10 w-screen h-screen origin-top-right bg-center bg-cover  ]`}
+      initial={{ scale: 1.3 }}
+      className={`fixed -z-10 origin-center w-screen h-screen origin-top-right bg-center bg-cover  ]`}
     >
       <img
         src={
           activeImg ||
-          "http://localhost:1337/uploads/janos_venczak_Em_De2_Qylec_I_unsplash_cfcfda2cd5.jpg"
+          "http://localhost:1337/uploads/petr_sidorov_GESOWH_4_YLRI_unsplash_5abb81389a.jpg"
         }
       />
       <motion.div

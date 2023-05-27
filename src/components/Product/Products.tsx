@@ -8,13 +8,14 @@ import {
 } from "framer-motion";
 import React, { useRef } from "react";
 import { boxVariant, listVariant } from "./animations";
+import { Content } from "@/utils/types/Types";
 
 interface IProduct {
   activeProduct: number | null;
   activeCategory: string | null;
   handleProductChange: (i: number) => void;
-  data: any;
-  handleProductSelection: (product: any) => void;
+  data: Content[];
+  handleProductSelection: (product: Content) => void;
 }
 
 export default function Products({
@@ -38,6 +39,7 @@ export default function Products({
 
   return (
     <div
+      key={"Products"}
       ref={scrollingContainerRef}
       className="absolute top-0 left-0 w-full h-full overflow-y-scroll "
     >
@@ -53,8 +55,8 @@ export default function Products({
             className="mt-48"
           >
             <AnimatePresence mode="wait">
-              {data.map((dataItem: any, i: number) => {
-                const { headline, subText, contentType } = dataItem.attributes;
+              {data.map((content, i: number) => {
+                const { headline, subText, contentType } = content.attributes;
 
                 let isActiveProduct = i === activeProduct;
                 let contentCategory =
@@ -63,12 +65,12 @@ export default function Products({
                 return (
                   contentCategory && (
                     <motion.div
+                      className="box-border relative flex items-end block w-full text-white opacity-100 cursor-pointer h-28 "
+                      onClick={() => handleProductSelection(content)}
+                      onHoverStart={() => handleProductChange(i)}
                       variants={listVariant}
                       exit={{ opacity: 0 }}
-                      onHoverStart={() => handleProductChange(i)}
-                      onClick={() => handleProductSelection(dataItem)}
                       id={`${i + 1}`}
-                      className="box-border relative flex items-end block w-full text-white opacity-100 h-28 "
                       key={i}
                       layout
                     >
