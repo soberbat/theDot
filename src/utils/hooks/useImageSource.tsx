@@ -14,16 +14,20 @@ const useImageSource = (
       ({ attributes: { contentType } }) => contentType === activeCategory
     );
 
-    const firstProductUrl = firstOnTheLine?.attributes.imageUrl;
+    const sourceDomainUrl = "http://localhost:1337";
+    const firstProductUrl =
+      sourceDomainUrl +
+      firstOnTheLine?.attributes.slider.data[0].attributes.url;
 
-    const activeItemUrl =
-      bgImages && bgImages[activeProduct as number]?.imageUrl;
+    const activeItemUrl = bgImages && bgImages[activeProduct as number];
+    console.log({ activeItemUrl });
+    console.log({ activeProduct });
 
-    activeProduct
+    activeProduct || activeProduct === 0
       ? setimageSource(activeItemUrl)
       : setimageSource(firstProductUrl);
   }, [activeCategory, activeProduct, bgImages, data]);
-
+  console.log(imageSource);
   return imageSource;
 };
 

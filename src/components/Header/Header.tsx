@@ -13,7 +13,7 @@ export const HeaderWithRef = forwardRef(function Header(
   ref: any
 ) {
   return (
-    <div id="header" ref={ref} className="absolute z-[5] w-full h-28 ">
+    <div id="header" ref={ref} className="absolute z-[5]  w-full h-28 ">
       <div className="relative w-full h-full ">
         <motion.div className="absolute flex gap-2 font-semibold text-white top-1/2 " />
 
@@ -25,7 +25,7 @@ export const HeaderWithRef = forwardRef(function Header(
           </div>
         </div>
         <Marquee />
-      </div>
+      </div> 
     </div>
   );
 });

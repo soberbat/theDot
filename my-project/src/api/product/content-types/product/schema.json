@@ -15,15 +15,6 @@
     "headline": {
       "type": "string"
     },
-    "subText": {
-      "type": "string"
-    },
-    "description": {
-      "type": "richtext"
-    },
-    "imageUrl": {
-      "type": "string"
-    },
     "contentType": {
       "type": "enumeration",
       "enum": [
@@ -32,6 +23,26 @@
         "Tv",
         "Theatre"
       ]
+    },
+    "date": {
+      "type": "string"
+    },
+    "slider": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "paragraph": {
+      "type": "text"
+    },
+    "paragraph2": {
+      "type": "richtext"
     }
   }
 }

@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import {
   useScroll,
   useSpring,
@@ -15,7 +16,7 @@ interface IProduct {
   activeCategory: string | null;
   handleProductChange: (i: number) => void;
   data: Content[];
-  handleProductSelection: (product: Content) => void;
+  handleProductSelection: (product: Content, i) => void;
 }
 
 export default function Products({
@@ -56,7 +57,7 @@ export default function Products({
           >
             <AnimatePresence mode="wait">
               {data.map((content, i: number) => {
-                const { headline, subText, contentType } = content.attributes;
+                const { headline, contentType } = content.attributes;
 
                 let isActiveProduct = i === activeProduct;
                 let contentCategory =
@@ -65,8 +66,8 @@ export default function Products({
                 return (
                   contentCategory && (
                     <motion.div
-                      className="box-border relative flex items-end block w-full text-white opacity-100 cursor-pointer h-28 "
-                      onClick={() => handleProductSelection(content)}
+                      className="box-border relative flex items-end block w-full h-20 text-white opacity-100 cursor-pointer "
+                      onClick={() => handleProductSelection(content, i)}
                       onHoverStart={() => handleProductChange(i)}
                       variants={listVariant}
                       exit={{ opacity: 0 }}
@@ -74,17 +75,21 @@ export default function Products({
                       key={i}
                       layout
                     >
-                      <motion.div>
-                        <h1 className="text-4xl font-light "> {headline}</h1>
-                        <span className="font-thin">{subText}</span>
-
+                      <motion.div className="relative">
                         {isActiveProduct && (
-                          <motion.div
-                            className="absolute w-2 h-2 bg-white rounded-full bottom-9 -left-5"
-                            transition={{ duration: 0.2 }}
+                          <motion.span
+                            className="absolute w-2 h-2 transform translate-y-1/2 bg-white rounded-full -left-4 top-1/2 "
+                            transition={{ duration: 0.2, easings: "circIn" }}
                             layoutId="underline"
                           />
                         )}
+
+                        <div className="relative flex-1">
+                          <div className="absolute w-3 opacity-75 -right-5 -top-1">
+                            <img src={`/${contentType}.svg`} alt="" />
+                          </div>
+                          <h1 className="text-3xl font-light "> {headline}</h1>
+                        </div>
                       </motion.div>
                     </motion.div>
                   )

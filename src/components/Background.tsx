@@ -27,12 +27,7 @@ const Background = ({ activeImg, isProductSelected }: IBackground) => {
       initial={{ scale: 1.3 }}
       className={`fixed -z-10 origin-center w-screen h-screen origin-top-right bg-center bg-cover  ]`}
     >
-      <img
-        src={
-          activeImg ||
-          "http://localhost:1337/uploads/petr_sidorov_GESOWH_4_YLRI_unsplash_5abb81389a.jpg"
-        }
-      />
+      <img src={activeImg || ""} />
       <motion.div
         initial={{ opacity: 1 }}
         key={activeImg}

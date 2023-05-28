@@ -20,14 +20,14 @@ import useImageSource from "@/utils/hooks/useImageSource";
 import Slider from "../Slider";
 
 interface IHomePage {
-  data: Content[];
+  data: any;
 }
 
 export default function HomePage({ data }: IHomePage) {
   const headerRef = useRef<any>(null);
   const bgImages = useRef<any>(null);
 
-  const [activeProduct, setActiveProduct] = useState<number | null>(1);
+  const [activeProduct, setActiveProduct] = useState<number | null>(0);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [isProductSlideVisible, setIsProductSlideVisible] = useState(false);
@@ -40,9 +40,12 @@ export default function HomePage({ data }: IHomePage) {
   );
 
   bgImages.current = useMemo(() => {
-    return data.map(({ attributes: { imageUrl } }, i: number) => ({
-      imageUrl,
-    }));
+    return data.map((dataItem) => {
+      const dataSource = dataItem.attributes.slider.data[0].attributes.url;
+      const sourceDomainUrl = "http://localhost:1337";
+
+      return sourceDomainUrl + dataSource;
+    });
   }, [data]);
 
   const handleProductChange = useCallback((i: number) => {
@@ -57,8 +60,10 @@ export default function HomePage({ data }: IHomePage) {
     setIsProductSlideVisible(isVisible);
   }, []);
 
-  const handleProductSelection = useCallback((content: Content) => {
+  const handleProductSelection = useCallback((content: Content, i: number) => {
     setSelectedProduct(content);
+    console.log(i);
+    setActiveProduct(i);
   }, []);
 
   const handleCategoryChange = useCallback((category: string) => {
@@ -69,10 +74,10 @@ export default function HomePage({ data }: IHomePage) {
   useEffect(() => {
     if (!headerRef.current) return;
 
-    const { targets, Iobserver } = DetectIntersect(headerRef, setActiveProduct);
-    return () => {
-      targets.forEach((target) => Iobserver.unobserve(target));
-    };
+    // const { targets, Iobserver } = DetectIntersect(headerRef, setActiveProduct);
+    // return () => {
+    //   targets.forEach((target) => Iobserver.unobserve(target));
+    // };
   }, [headerRef.current]);
 
   return (

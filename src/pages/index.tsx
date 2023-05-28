@@ -11,16 +11,23 @@ export async function getServerSideProps() {
   const client = getClient();
   const { data } = await client.query({
     query: gql`
-      query GetArticles {
+      query getData {
         products {
           data {
             id
             attributes {
               headline
-              subText
-              description
-              imageUrl
+              paragraph
+              paragraph2
+              date
               contentType
+              slider {
+                data {
+                  attributes {
+                    url
+                  }
+                }
+              }
             }
           }
         }
@@ -29,12 +36,13 @@ export async function getServerSideProps() {
   });
 
   const pageData = data.products.data;
+
   return {
     props: { pageData },
   };
 }
 
-export default function Home({ pageData }: { pageData: any }) {
+export default function Home({ pageData }: any) {
   return (
     <>
       <Head>
