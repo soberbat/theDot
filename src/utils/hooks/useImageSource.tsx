@@ -5,29 +5,32 @@ const useImageSource = (
   data: Content[],
   activeProduct: number | null,
   activeCategory: string | null,
+  selectedProduct: unknown,
   bgImages: any
 ) => {
   const [imageSource, setimageSource] = useState<any>("");
 
   useEffect(() => {
-    const firstOnTheLine = data.find(
-      ({ attributes: { contentType } }) => contentType === activeCategory
+    const firstOnTheLine = data.find(({ attributes: { contentType } }, i) =>
+      activeCategory ? contentType === activeCategory : i === 0
     );
 
     const sourceDomainUrl = "http://localhost:1337";
-    const firstProductUrl =
+    const firstMediaUrl =
       sourceDomainUrl +
       firstOnTheLine?.attributes.slider.data[0].attributes.url;
 
     const activeItemUrl = bgImages && bgImages[activeProduct as number];
-    console.log({ activeItemUrl });
-    console.log({ activeProduct });
+    const selectedItemUrl =
+      bgImages && bgImages[(selectedProduct?.id - 1) as number];
 
-    activeProduct || activeProduct === 0
+    activeProduct
       ? setimageSource(activeItemUrl)
-      : setimageSource(firstProductUrl);
-  }, [activeCategory, activeProduct, bgImages, data]);
-  console.log(imageSource);
+      : selectedProduct
+      ? setimageSource(selectedItemUrl)
+      : setimageSource(firstMediaUrl);
+  }, [activeCategory, activeProduct, bgImages, data, selectedProduct]);
+
   return imageSource;
 };
 

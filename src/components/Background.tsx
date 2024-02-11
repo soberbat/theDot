@@ -27,7 +27,7 @@ const Background = ({ activeImg, isProductSelected }: IBackground) => {
       initial={{ scale: 1.3 }}
       className={`fixed -z-10 origin-center w-screen h-screen origin-top-right bg-center bg-cover  ]`}
     >
-      <img src={activeImg || ""} />
+      <img className="object-cover w-screen h-screen " src={activeImg || ""} />
       <motion.div
         initial={{ opacity: 1 }}
         key={activeImg}

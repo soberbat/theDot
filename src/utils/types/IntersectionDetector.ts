@@ -1,22 +1,29 @@
-export default function DetectIntersect(
-  headerRef: any,
-  activeProductChange: React.Dispatch<React.SetStateAction<number | null>>
-) {
-  let headerRect = headerRef.current.getBoundingClientRect();
-  let targets = [...(document.getElementsByClassName("block") as any)];
+import { MutableRefObject } from "react";
 
-  let cb = (entries: any) => {
-    entries.forEach((entry: any) => {
-      let isoverlap = entry.boundingClientRect.y <= headerRect.bottom - 5;
-      if (isoverlap) {
-        const num = parseInt(entry.target.id);
-        activeProductChange((index) => (index !== num ? num + 1 : num + 1));
+const rootMargin = "-10% 0px -90% 0px";
+
+export default function DetectIntersect(
+  setActiveBlock: React.Dispatch<React.SetStateAction<number | null>>,
+  children: HTMLCollection
+) {
+  const targets = [...children];
+
+  let callback = (entries: IntersectionObserverEntry[]) => {
+    entries.forEach((entry: IntersectionObserverEntry) => {
+      const id = parseInt(entry.target.id);
+      if (entry.isIntersecting) {
+        setActiveBlock((prevIdx) => (prevIdx !== id ? id + 1 : id + 1));
+      } else {
+        if (id === 0) {
+          setActiveBlock(0);
+        }
       }
     });
   };
 
-  let Iobserver = new IntersectionObserver(cb, {});
-  targets.forEach((target) => Iobserver.observe(target));
+  let observer = new IntersectionObserver(callback, { rootMargin });
 
-  return { targets, Iobserver };
+  targets.forEach((target) => observer.observe(target));
+
+  return { targets, observer };
 }

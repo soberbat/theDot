@@ -1,104 +1,107 @@
 /* eslint-disable @next/next/no-img-element */
-import {
-  useScroll,
-  useSpring,
-  useTransform,
-  motion,
-  delay,
-  AnimatePresence,
-} from "framer-motion";
-import React, { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { boxVariant, listVariant } from "./animations";
 import { Content } from "@/utils/types/Types";
+import { scrollConfig } from "@/utils/config";
+import DetectIntersect from "@/utils/types/IntersectionDetector";
+import SmoothScroller from "../SmoothScroller";
 
 interface IProduct {
-  activeProduct: number | null;
+  hoveredItem: number | null;
   activeCategory: string | null;
-  handleProductChange: (i: number) => void;
+  onHover: (i: number) => void;
   data: Content[];
-  handleProductSelection: (product: Content, i) => void;
+  onItemClick: (product: Content, i: number) => void;
+  setHoveredItem: React.Dispatch<React.SetStateAction<number | null>>;
+  selectedItem: any;
 }
 
 export default function Products({
-  activeProduct,
+  hoveredItem,
   activeCategory,
-  handleProductChange,
-  handleProductSelection,
+  onHover,
+  selectedItem,
+  setHoveredItem,
+  onItemClick,
   data,
 }: IProduct) {
-  const scrollingContainerRef = useRef<null | HTMLDivElement>(null);
-  const containerRef = useRef();
+  const scrollingContainerRef = useRef<HTMLDivElement>(null);
+  const [parentNode, setparentNode] = useState<HTMLDivElement | null>();
+  const parentRef = useRef<HTMLDivElement>();
 
-  const { scrollY } = useScroll({ container: scrollingContainerRef });
+  const refcallback = (node: HTMLDivElement | null) => {
+    if (node) {
+      setparentNode(node);
+      parentRef.current = node;
+    }
+  };
 
-  const y = useSpring(scrollY, {
-    stiffness: 60,
-    damping: 40,
-    restDelta: 0.001,
-  });
-  const translateY = useTransform(y, (y) => -y);
+  useEffect(() => {
+    const itemsOnList = parentRef!.current!.children;
+    const { targets, observer } = DetectIntersect(setHoveredItem, itemsOnList);
+    return () => targets.forEach((target) => observer.unobserve(target));
+  }, [activeCategory, selectedItem, parentNode]);
 
   return (
     <div
       key={"Products"}
       ref={scrollingContainerRef}
-      className="absolute top-0 left-0 w-full h-full overflow-y-scroll "
+      className="absolute top-0 left-0 w-full h-full overflow-y-scroll"
     >
-      <div>
+      <SmoothScroller container={scrollingContainerRef}>
         <motion.div
-          style={{ translateY }}
-          className="absolute w-4/12 min-h-full pl-10 "
+          ref={refcallback}
+          variants={boxVariant}
+          animate="visible"
+          initial="hidden"
+          className="mt-48"
         >
-          <motion.div
-            variants={boxVariant}
-            animate="visible"
-            initial="hidden"
-            className="mt-48"
-          >
-            <AnimatePresence mode="wait">
-              {data.map((content, i: number) => {
-                const { headline, contentType } = content.attributes;
+          <AnimatePresence mode="wait">
+            {data.map((content, i: number) => {
+              const { headline, contentType } = content.attributes;
 
-                let isActiveProduct = i === activeProduct;
-                let contentCategory =
-                  !activeCategory || contentType === activeCategory;
+              let isHoveredItem = i === hoveredItem;
+              let contentCategory =
+                !activeCategory || contentType === activeCategory;
 
-                return (
-                  contentCategory && (
-                    <motion.div
-                      className="box-border relative flex items-end block w-full h-20 text-white opacity-100 cursor-pointer "
-                      onClick={() => handleProductSelection(content, i)}
-                      onHoverStart={() => handleProductChange(i)}
-                      variants={listVariant}
-                      exit={{ opacity: 0 }}
-                      id={`${i + 1}`}
-                      key={i}
-                      layout
-                    >
-                      <motion.div className="relative">
-                        {isActiveProduct && (
-                          <motion.span
-                            className="absolute w-2 h-2 transform translate-y-1/2 bg-white rounded-full -left-4 top-1/2 "
-                            transition={{ duration: 0.2, easings: "circIn" }}
-                            layoutId="underline"
-                          />
-                        )}
+              return (
+                contentCategory && (
+                  <motion.div
+                    className="box-border relative flex items-center h-20 ml-12 text-white opacity-100 cursor-pointer w-72 intersectionBlock lg:ml:0 "
+                    onClick={() => onItemClick(content, i)}
+                    onHoverStart={() => onHover(i)}
+                    variants={listVariant}
+                    exit={{ opacity: 0 }}
+                    id={`${i}`}
+                    key={i}
+                    layout
+                  >
+                    <motion.div className="relative">
+                      {isHoveredItem && (
+                        <motion.span
+                          className="absolute w-2 h-2 transform translate-y-1/2 bg-white rounded-full -left-4 top-1/2"
+                          transition={{ duration: 0.2, easings: "circIn" }}
+                          layoutId="dot"
+                        />
+                      )}
 
-                        <div className="relative flex-1">
-                          <div className="absolute w-3 opacity-75 -right-5 -top-1">
-                            <img src={`/${contentType}.svg`} alt="" />
-                          </div>
-                          <h1 className="text-3xl font-light "> {headline}</h1>
+                      <div className="relative flex-1">
+                        <div className="absolute w-3 opacity-75 -right-5 -top-1">
+                          <img src={`/${contentType}.svg`} alt="" />
                         </div>
-                      </motion.div>
+                        <h1 className="text-2xl font-light lg:text-3xl">
+                          {headline}
+                        </h1>
+                      </div>
                     </motion.div>
-                  )
-                );
-              })}
-            </AnimatePresence>
-          </motion.div>
+                  </motion.div>
+                )
+              );
+            })}
+          </AnimatePresence>
         </motion.div>
-      </div>
+      </SmoothScroller>
     </div>
   );
 }

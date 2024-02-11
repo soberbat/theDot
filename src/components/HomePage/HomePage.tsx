@@ -24,101 +24,94 @@ interface IHomePage {
 }
 
 export default function HomePage({ data }: IHomePage) {
-  const headerRef = useRef<any>(null);
+  const headerRef = useRef<HTMLDivElement | null>(null);
   const bgImages = useRef<any>(null);
-
-  const [activeProduct, setActiveProduct] = useState<number | null>(0);
-  const [selectedProduct, setSelectedProduct] = useState<any>(null);
+  const [hoveredItem, setHoveredItem] = useState<number | null>(0);
+  const [selectedItem, setSelectedItem] = useState<any>(null);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
-  const [isProductSlideVisible, setIsProductSlideVisible] = useState(false);
+  const [isSliderVisible, seIsSliderVisible] = useState(false);
 
   const imageSrc = useImageSource(
     data,
-    activeProduct,
+    hoveredItem,
     activeCategory,
+    selectedItem,
     bgImages.current
   );
 
+  const onHover = useCallback((i: number) => {
+    setHoveredItem(i);
+  }, []);
+
+  const handleGoBack = useCallback(() => {
+    setSelectedItem(null);
+  }, []);
+
+  const onSlideVisibilityChange = useCallback((isVisible: boolean) => {
+    seIsSliderVisible(isVisible);
+  }, []);
+
+  const onItemClick = useCallback((content: Content, i: number) => {
+    setSelectedItem(content);
+    setHoveredItem(i);
+  }, []);
+
+  const handleCategoryChange = useCallback((category: string) => {
+    setHoveredItem(category === undefined ? 0 : null);
+    setActiveCategory(category);
+  }, []);
+
   bgImages.current = useMemo(() => {
-    return data.map((dataItem) => {
+    return data.map((dataItem: any) => {
       const dataSource = dataItem.attributes.slider.data[0].attributes.url;
       const sourceDomainUrl = "http://localhost:1337";
-
       return sourceDomainUrl + dataSource;
     });
   }, [data]);
 
-  const handleProductChange = useCallback((i: number) => {
-    setActiveProduct(i);
-  }, []);
-
-  const handleGoBack = useCallback(() => {
-    setSelectedProduct(null);
-  }, []);
-
-  const handleSlideVisibility = useCallback((isVisible: boolean) => {
-    setIsProductSlideVisible(isVisible);
-  }, []);
-
-  const handleProductSelection = useCallback((content: Content, i: number) => {
-    setSelectedProduct(content);
-    console.log(i);
-    setActiveProduct(i);
-  }, []);
-
-  const handleCategoryChange = useCallback((category: string) => {
-    setActiveProduct(null);
-    setActiveCategory(category);
-  }, []);
-
-  useEffect(() => {
-    if (!headerRef.current) return;
-
-    // const { targets, Iobserver } = DetectIntersect(headerRef, setActiveProduct);
-    // return () => {
-    //   targets.forEach((target) => Iobserver.unobserve(target));
-    // };
-  }, [headerRef.current]);
-
   return (
-    <motion.div className="relative w-screen h-screen ">
-      <Header handleClick={handleCategoryChange} ref={headerRef} />
-
+    <motion.div
+      ref={headerRef}
+      className="lg:relative lg:w-screen lg:h-screen "
+    >
+      <Header
+        handleClick={handleCategoryChange}
+        isProductSelected={selectedItem}
+      />
       <Gradient />
       <Background
-        isProductSelected={selectedProduct ?? false}
+        isProductSelected={selectedItem ?? false}
         activeImg={imageSrc}
       />
 
       <AnimatePresence mode="wait">
-        {!selectedProduct ? (
+        {!selectedItem ? (
           <Products
-            key={"92819"}
+            key={"products"}
             data={data}
-            activeProduct={activeProduct}
+            hoveredItem={hoveredItem}
             activeCategory={activeCategory}
-            handleProductChange={handleProductChange}
-            handleProductSelection={handleProductSelection}
+            onHover={onHover}
+            onItemClick={onItemClick}
+            setHoveredItem={setHoveredItem}
+            selectedItem={selectedItem}
           />
         ) : (
           <Product
-            key={"22828"}
-            content={selectedProduct}
+            key={"product"}
+            content={selectedItem}
             handleGoBack={handleGoBack}
-            changeSlideVisibility={handleSlideVisibility}
+            changeSlideVisibility={onSlideVisibilityChange}
           />
         )}
       </AnimatePresence>
 
-      <AnimatePresence>
-        {isProductSlideVisible && (
-          <Slider
-            key={"1414"}
-            content={selectedProduct}
-            changeSlideVisibility={handleSlideVisibility}
-          />
-        )}
-      </AnimatePresence>
+      <Slider
+        key={"slider"}
+        content={selectedItem}
+        isSliderVisible={isSliderVisible}
+        changeSlideVisibility={onSlideVisibilityChange}
+      />
     </motion.div>
   );
 }

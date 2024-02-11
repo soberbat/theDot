@@ -9,15 +9,23 @@ interface ICategories {
 const Categories = ({ handleClick }: ICategories) => {
   const [hoveredCategory, setHoveredCategory] = useState<number | null>(null);
   const [isActiveCategory, setisActiveCategory] = useState<number | null>(null);
+  const [activeCategory, setactiveCategory] = useState(undefined);
 
   const handleCategoryChange = (category: string, i: number) => {
+    if (category === activeCategory) {
+      handleClick(undefined);
+      setisActiveCategory(null);
+      setactiveCategory(undefined);
+      return;
+    }
     handleClick(category);
     setisActiveCategory(i);
+    setactiveCategory(category);
   };
 
   return (
-    <div className="absolute right-0 flex items-center justify-between w-2/12 h-full ">
-      <div className="flex items-center justify-center flex-1 w-2/6 ">
+    <div className="fixed flex items-center justify-between w-1/2 p-4 transform -translate-x-1/2 bg-gray-200 bg-opacity-25 border border-gray-200 rounded-full lg:p-0 lg:backdrop-blur-none backdrop-blur-xl lg:border-none lg:bg-transparent lg:opacity-100 bottom-8 bg-blur left-1/2 lg:left-auto lg:w-2/12 lg:h-full lg:absolute lg:bottom-auto lg:transform-none lg:right-0 ">
+      <div className="flex items-center justify-around flex-1 w-2/6 lg:justify-center ">
         {["Theatre", "Movie", "Interactive", "Tv"].map((category, i) => {
           const isHoveredCategory = i === hoveredCategory;
 

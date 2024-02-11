@@ -27,7 +27,7 @@ export default function Product({
       className="fixed top-0 left-0 w-full h-full"
     >
       <div className="flex flex-col justify-between h-full pt-48 pb-12 pl-10">
-        <div className="w-4/12 gap-3 pr-24 text-left text-white ">
+        <div className="w-full gap-3 pr-2 text-left text-white lg:pr-24 lg:w-4/12 ">
           <div>
             <h1 className="mb-2 text-3xl text-left "> {headline} </h1>
             <span className="font-serif font-thin "> {date} </span>
@@ -39,7 +39,7 @@ export default function Product({
           </div>
         </div>
 
-        <div onClick={() => handleGoBack()} className="mt-5 text-white w-min ">
+        <div onClick={() => handleGoBack()} className="mt-12 text-white w-min ">
           <Arrow />
         </div>
       </div>
@@ -48,7 +48,7 @@ export default function Product({
         initial={{ opacity: 0 }}
         exit={{ opacity: 0 }}
         onClick={() => changeSlideVisibility(true)}
-        className="fixed z-50 cursor-pointer transform -translate-y-1/2 left-[55%] top-1/2 "
+        className="fixed z-50 cursor-pointer transform lg:-translate-y-1/2 bottom-10  -translate-x-1/2 left-1/2 lg:left-[55%] lg:top-1/2 "
       >
         <PlayButton />
       </motion.div>
