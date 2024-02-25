@@ -89,7 +89,10 @@ export default function Products({
 
                       <div className="relative flex-1">
                         <div className="absolute w-3 opacity-75 -top-1 -right-5">
-                          <img src={`/${contenType}.svg`} alt="" />
+                          <img
+                            src={`/${contenType.toLowerCase()}.svg`}
+                            alt=""
+                          />
                         </div>
                         <h1 className="text-2xl font-light lg:text-3xl">
                           {headline}

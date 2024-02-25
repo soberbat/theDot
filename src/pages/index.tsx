@@ -20,6 +20,7 @@ export default function Home({ pageData }: any) {
   return (
     <>
       <Head>
+        <link rel="icon" type="image/svg" href="app.svg" />
         <title>DOT</title>
       </Head>
       <HomePage data={pageData} />
