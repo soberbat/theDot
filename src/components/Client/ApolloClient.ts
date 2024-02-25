@@ -6,7 +6,7 @@ export const initClient = () => {
   if (!client || typeof window === "undefined") {
     client = new ApolloClient({
       link: new HttpLink({
-        uri: process.env.CMS_URL,
+        uri: process.env.NEXT_PUBLIC_CMS_URL,
       }),
 
       cache: new InMemoryCache({ addTypename: false }),
