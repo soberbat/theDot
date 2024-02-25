@@ -70,15 +70,15 @@ const Slider = ({ content, changeSlideVisibility, isSliderVisible }: Props) => {
         </div>
 
         <div className="relative w-full h-[75%] ">
-          <div className="absolute top-0 lg:left-0 -left-2 z-30 w-12 pl-4   h-full bg-gradient-to-r from-10%  from-zinc-900 to-transparent flex items-center justify-center ">
+          <div className="top-0 -left-2 lg:left-0 z-30 absolute flex justify-center items-center bg-gradient-to-r from-10% from-zinc-900 to-transparent pl-4 w-12 h-full ">
             <div ref={prevRef} className="cursor-pointer ">
               <Arrow />
             </div>
           </div>
-          <div className="absolute pr-4 top-0  -right-2 lg:right-0 z-30 w-12 h-full bg-gradient-to-l from-10% from-zinc-900 flex items-center justify-center to-transparent ">
+          <div className="top-0 -right-2 lg:right-0 z-30 absolute flex justify-center items-center bg-gradient-to-l from-10% from-zinc-900 to-transparent pr-4 w-12 h-full ">
             <div
               ref={nextRef}
-              className="transform cursor-pointer   scale-x-[-1]"
+              className="transform cursor-pointer scale-x-[-1]"
             >
               <Arrow />
             </div>
@@ -101,8 +101,8 @@ const Slider = ({ content, changeSlideVisibility, isSliderVisible }: Props) => {
             >
               {content &&
                 content.attributes.slider.data.map((slideItem, index) => {
-                  const sourceDomainUrl = "http://localhost:1337";
-                  const imageUrl = sourceDomainUrl + slideItem.attributes.url;
+                  const imageUrl = slideItem.attributes
+                    .url as unknown as string;
                   return (
                     <SwiperSlide key={index}>
                       {({ isActive }) => {

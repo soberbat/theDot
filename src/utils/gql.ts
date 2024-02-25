@@ -10,8 +10,7 @@ export const query = {
             headline
             paragraph
             paragraph2
-            date
-            contentType
+            contenType
             slider {
               data {
                 attributes {

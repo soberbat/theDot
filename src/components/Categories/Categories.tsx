@@ -3,15 +3,17 @@ import { motion } from "framer-motion";
 import React, { useState } from "react";
 
 interface ICategories {
-  handleClick: (category: string) => void;
+  handleClick: (category: string | undefined | number) => void;
 }
 
 const Categories = ({ handleClick }: ICategories) => {
   const [hoveredCategory, setHoveredCategory] = useState<number | null>(null);
   const [isActiveCategory, setisActiveCategory] = useState<number | null>(null);
-  const [activeCategory, setactiveCategory] = useState(undefined);
+  const [activeCategory, setactiveCategory] = useState<
+    string | undefined | number
+  >(undefined);
 
-  const handleCategoryChange = (category: string, i: number) => {
+  const handleCategoryChange = (category: string | number, i: number) => {
     if (category === activeCategory) {
       handleClick(undefined);
       setisActiveCategory(null);
@@ -24,7 +26,7 @@ const Categories = ({ handleClick }: ICategories) => {
   };
 
   return (
-    <div className="fixed flex items-center justify-between w-1/2 p-4 transform -translate-x-1/2 bg-gray-200 bg-opacity-25 border border-gray-200 rounded-full lg:p-0 lg:backdrop-blur-none backdrop-blur-xl lg:border-none lg:bg-transparent lg:opacity-100 bottom-8 bg-blur left-1/2 lg:left-auto lg:w-2/12 lg:h-full lg:absolute lg:bottom-auto lg:transform-none lg:right-0 ">
+    <div className="fixed flex items-center justify-between w-1/2 p-4 transform -translate-x-1/2 bg-gray-200 bg-opacity-25 border border-gray-200 rounded-full lg:right-0 bottom-8 lg:bottom-auto left-1/2 lg:left-auto lg:absolute lg:bg-transparent lg:opacity-100 backdrop-blur-xl lg:backdrop-blur-none bg-blur lg:p-0 lg:border-none lg:w-2/12 lg:h-full lg:transform-none ">
       <div className="flex items-center justify-around flex-1 w-2/6 lg:justify-center ">
         {["Theatre", "Movie", "Interactive", "Tv"].map((category, i) => {
           const isHoveredCategory = i === hoveredCategory;
@@ -68,7 +70,7 @@ const Categories = ({ handleClick }: ICategories) => {
                   key={"motionkey"}
                   layoutId="dotLayout"
                   layout
-                  className="absolute z-0 block w-8 h-8 rounded-full bg-slate-400 -top-1/2"
+                  className="absolute z-0 block w-8 h-8 rounded-full -top-1/2 bg-slate-400"
                 ></motion.span>
               )}
             </motion.div>

@@ -6,10 +6,11 @@ import { Content } from "@/utils/types/Types";
 import { scrollConfig } from "@/utils/config";
 import DetectIntersect from "@/utils/types/IntersectionDetector";
 import SmoothScroller from "../SmoothScroller";
+import { ActiveCategory } from "@/utils/types/appTypes";
 
 interface IProduct {
   hoveredItem: number | null;
-  activeCategory: string | null;
+  activeCategory: ActiveCategory;
   onHover: (i: number) => void;
   data: Content[];
   onItemClick: (product: Content, i: number) => void;
@@ -59,11 +60,11 @@ export default function Products({
         >
           <AnimatePresence mode="wait">
             {data.map((content, i: number) => {
-              const { headline, contentType } = content.attributes;
+              const { headline, contenType } = content.attributes;
 
               let isHoveredItem = i === hoveredItem;
               let contentCategory =
-                !activeCategory || contentType === activeCategory;
+                !activeCategory || contenType === activeCategory;
 
               return (
                 contentCategory && (
@@ -80,15 +81,15 @@ export default function Products({
                     <motion.div className="relative">
                       {isHoveredItem && (
                         <motion.span
-                          className="absolute w-2 h-2 transform translate-y-1/2 bg-white rounded-full -left-4 top-1/2"
+                          className="absolute w-2 h-2 transform translate-y-1/2 bg-white rounded-full top-1/2 -left-4"
                           transition={{ duration: 0.2, easings: "circIn" }}
                           layoutId="dot"
                         />
                       )}
 
                       <div className="relative flex-1">
-                        <div className="absolute w-3 opacity-75 -right-5 -top-1">
-                          <img src={`/${contentType}.svg`} alt="" />
+                        <div className="absolute w-3 opacity-75 -top-1 -right-5">
+                          <img src={`/${contenType}.svg`} alt="" />
                         </div>
                         <h1 className="text-2xl font-light lg:text-3xl">
                           {headline}

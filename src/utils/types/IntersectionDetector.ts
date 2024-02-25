@@ -6,7 +6,7 @@ export default function DetectIntersect(
   setActiveBlock: React.Dispatch<React.SetStateAction<number | null>>,
   children: HTMLCollection
 ) {
-  const targets = [...children];
+  const targets = Array.from(children);
 
   let callback = (entries: IntersectionObserverEntry[]) => {
     entries.forEach((entry: IntersectionObserverEntry) => {

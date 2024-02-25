@@ -1,23 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { Content } from "../types/Types";
+import { ActiveCategory } from "../types/appTypes";
 
 const useImageSource = (
   data: Content[],
   activeProduct: number | null,
-  activeCategory: string | null,
-  selectedProduct: unknown,
+  activeCategory: ActiveCategory,
+  selectedProduct: any,
   bgImages: any
 ) => {
   const [imageSource, setimageSource] = useState<any>("");
 
   useEffect(() => {
-    const firstOnTheLine = data.find(({ attributes: { contentType } }, i) =>
-      activeCategory ? contentType === activeCategory : i === 0
+    const firstOnTheLine = data.find(({ attributes: { contenType } }, i) =>
+      activeCategory ? contenType === activeCategory : i === 0
     );
 
-    const sourceDomainUrl = "http://localhost:1337";
     const firstMediaUrl =
-      sourceDomainUrl +
       firstOnTheLine?.attributes.slider.data[0].attributes.url;
 
     const activeItemUrl = bgImages && bgImages[activeProduct as number];

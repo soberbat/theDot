@@ -16,6 +16,6 @@ interface contentİnfo {
   date: string;
   paragraph: string;
   paragraph2: string;
-  contentType: string;
+  contenType: string;
   slider: Slider;
 }

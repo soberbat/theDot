@@ -18,6 +18,7 @@ import { Content } from "@/utils/types/Types";
 import DetectIntersect from "@/utils/types/IntersectionDetector";
 import useImageSource from "@/utils/hooks/useImageSource";
 import Slider from "../Slider";
+import { ActiveCategory } from "@/utils/types/appTypes";
 
 interface IHomePage {
   data: any;
@@ -28,7 +29,7 @@ export default function HomePage({ data }: IHomePage) {
   const bgImages = useRef<any>(null);
   const [hoveredItem, setHoveredItem] = useState<number | null>(0);
   const [selectedItem, setSelectedItem] = useState<any>(null);
-  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [activeCategory, setActiveCategory] = useState<ActiveCategory>(null);
   const [isSliderVisible, seIsSliderVisible] = useState(false);
 
   const imageSrc = useImageSource(
@@ -56,17 +57,15 @@ export default function HomePage({ data }: IHomePage) {
     setHoveredItem(i);
   }, []);
 
-  const handleCategoryChange = useCallback((category: string) => {
+  const handleCategoryChange = useCallback((category: ActiveCategory) => {
     setHoveredItem(category === undefined ? 0 : null);
     setActiveCategory(category);
   }, []);
 
   bgImages.current = useMemo(() => {
-    return data.map((dataItem: any) => {
-      const dataSource = dataItem.attributes.slider.data[0].attributes.url;
-      const sourceDomainUrl = "http://localhost:1337";
-      return sourceDomainUrl + dataSource;
-    });
+    return data.map(
+      (dataItem: any) => dataItem.attributes.slider.data[0].attributes.url
+    );
   }, [data]);
 
   return (
