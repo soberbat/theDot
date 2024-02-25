@@ -6,8 +6,7 @@ export const initClient = () => {
   if (!client || typeof window === "undefined") {
     client = new ApolloClient({
       link: new HttpLink({
-        // uri: process.env.CMS_URL,
-        uri: "https://strapi-cms-7egxgsovaq-ew.a.run.app/graphql",
+        uri: process.env.CMS_URL,
       }),
 
       cache: new InMemoryCache({ addTypename: false }),
