@@ -69,7 +69,7 @@ export default function HomePage({ data }: IHomePage) {
   }, [data]);
 
   return (
-    <motion.div className="fixed top-0 left-0 lg:w-screen lg:h-screen ">
+    <motion.div className="fixed top-0 left-0 w-screen h-screen ">
       <motion.div ref={headerRef} className="h-full lg:relative ">
         <Header
           handleClick={handleCategoryChange}
@@ -79,6 +79,7 @@ export default function HomePage({ data }: IHomePage) {
         <Background
           isProductSelected={selectedItem ?? false}
           activeImg={imageSrc}
+          hoveredItem={hoveredItem}
         />
         <AnimatePresence mode="wait">
           {!selectedItem ? (

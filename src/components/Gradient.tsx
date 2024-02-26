@@ -3,7 +3,7 @@ import React from "react";
 
 const Gradient = () => {
   return (
-    <motion.div className="fixed w-3/6 h-full top-0 left-0 opacity-90  bg-gradient-to-r pl-9 from-40% via-80% from-black to-transparent z-0 " />
+    <motion.div className="top-0 left-0 z-0 fixed bg-gradient-to-r from-40% from-black via-80% to-transparent opacity-70 pl-9 w-3/6 h-full " />
   );
 };
 

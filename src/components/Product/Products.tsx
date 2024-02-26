@@ -58,7 +58,7 @@ export default function Products({
           initial="hidden"
           className="mt-48"
         >
-          <AnimatePresence mode="wait">
+          <AnimatePresence>
             {data.map((content, i: number) => {
               const { headline, contenType } = content.attributes;
 

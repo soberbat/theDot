@@ -51,7 +51,7 @@ const Slider = ({ content, changeSlideVisibility, isSliderVisible }: Props) => {
     >
       <div className="relative flex flex-col items-center w-full h-full gap-4 px-12 py-20 text-white">
         <div className="flex items-baseline justify-between w-full ">
-          <span className="font-sans text-5xl font-light">
+          <span className="font-sans text-2xl font-light lg:text-5xl">
             {content && content.attributes.headline}
           </span>
           <div className="flex gap-2 text-xs ">
@@ -92,8 +92,8 @@ const Slider = ({ content, changeSlideVisibility, isSliderVisible }: Props) => {
               }}
               loop
               centeredSlides
-              spaceBetween={40}
-              slidesPerView={1.5}
+              slidesPerView={window.innerWidth < 768 ? 1.1 : 1.5}
+              spaceBetween={window.innerWidth < 768 ? 20 : 60}
               modules={[Navigation]}
               slideToClickedSlide={true}
               onInit={(swiper) => handleInit(swiper)}
@@ -126,7 +126,7 @@ const Slider = ({ content, changeSlideVisibility, isSliderVisible }: Props) => {
             initial="initial"
             animate="animate"
             variants={sliderText}
-            className="absolute font-sans text-sm font-light transform -translate-x-1/2 -bottom-20 left-1/2 "
+            className="absolute font-sans text-sm font-light transform -translate-x-1/2 -bottom-14 left-1/2 "
           >
             Quick Brown Fox
           </motion.div>

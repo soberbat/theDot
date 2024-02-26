@@ -39,7 +39,10 @@ export default function Product({
           </div>
         </div>
 
-        <div onClick={() => handleGoBack()} className="mt-12 text-white w-min ">
+        <div
+          onClick={() => handleGoBack()}
+          className="mt-12 text-white cursor-pointer w-min "
+        >
           <Arrow />
         </div>
       </div>
@@ -48,7 +51,7 @@ export default function Product({
         initial={{ opacity: 0 }}
         exit={{ opacity: 0 }}
         onClick={() => changeSlideVisibility(true)}
-        className="fixed z-50 cursor-pointer transform lg:-translate-y-1/2 bottom-10  -translate-x-1/2 left-1/2 lg:left-[55%] lg:top-1/2 "
+        className="lg:top-1/2 bottom-10 left-1/2 lg:left-[55%] z-50 fixed transform -translate-x-1/2 lg:-translate-y-1/2 cursor-pointer "
       >
         <PlayButton />
       </motion.div>
