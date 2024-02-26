@@ -69,7 +69,7 @@ export default function HomePage({ data }: IHomePage) {
   }, [data]);
 
   return (
-    <motion.div className="fixed top-0 left-0 w-screen h-screen ">
+    <motion.div className="fixed top-0 left-0 w-screen h-dvh ">
       <motion.div ref={headerRef} className="h-full lg:relative ">
         <Header
           handleClick={handleCategoryChange}

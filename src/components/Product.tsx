@@ -26,7 +26,7 @@ export default function Product({
       exit={{ opacity: 0 }}
       className="fixed top-0 left-0 w-full h-full"
     >
-      <div className="flex flex-col justify-between h-full pt-48 pb-12 pl-10">
+      <div className="flex flex-col justify-between h-full pb-5 pl-10 pt-28 lg:pt-48">
         <div className="w-full gap-3 pr-2 text-left text-white lg:pr-24 lg:w-4/12 ">
           <div>
             <h1 className="mb-2 text-3xl text-left "> {headline} </h1>
@@ -51,7 +51,7 @@ export default function Product({
         initial={{ opacity: 0 }}
         exit={{ opacity: 0 }}
         onClick={() => changeSlideVisibility(true)}
-        className="lg:top-1/2 bottom-10 left-1/2 lg:left-[55%] z-50 fixed transform -translate-x-1/2 lg:-translate-y-1/2 cursor-pointer "
+        className="fixed bottom-0 z-50 h-auto transform -translate-x-1/2 cursor-pointer lg:top-1/2 lg:bottom-auto left-1/2 lg:-translate-y-1/2 "
       >
         <PlayButton />
       </motion.div>

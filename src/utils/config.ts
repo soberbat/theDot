@@ -1,4 +1,4 @@
 export const scrollConfig = {
-  stiffness: 35,
-  damping: 30,
+  stiffness: 10,
+  damping: 10,
 };
