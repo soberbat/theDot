@@ -21,7 +21,7 @@ const SmoothScroller: FC<ISmoothScroller> = ({ children, container }) => {
   return (
     <motion.div
       style={{ translateY }}
-      className="absolute w-screen min-h-full overflow-x-hidden lg:w-4/12 lg:pl-10"
+      className="absolute w-screen min-h-full overflow-x-hidden lg:pl-10 lg:w-4/12"
     >
       {children}
     </motion.div>

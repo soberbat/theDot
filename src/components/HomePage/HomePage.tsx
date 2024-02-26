@@ -69,48 +69,46 @@ export default function HomePage({ data }: IHomePage) {
   }, [data]);
 
   return (
-    <motion.div
-      ref={headerRef}
-      className="lg:relative lg:w-screen lg:h-screen "
-    >
-      <Header
-        handleClick={handleCategoryChange}
-        isProductSelected={selectedItem}
-      />
-      <Gradient />
-      <Background
-        isProductSelected={selectedItem ?? false}
-        activeImg={imageSrc}
-      />
+    <motion.div className="fixed top-0 left-0 lg:w-screen lg:h-screen ">
+      <motion.div ref={headerRef} className="h-full lg:relative ">
+        <Header
+          handleClick={handleCategoryChange}
+          isProductSelected={selectedItem}
+        />
+        <Gradient />
+        <Background
+          isProductSelected={selectedItem ?? false}
+          activeImg={imageSrc}
+        />
+        <AnimatePresence mode="wait">
+          {!selectedItem ? (
+            <Products
+              key={"products"}
+              data={data}
+              hoveredItem={hoveredItem}
+              activeCategory={activeCategory}
+              onHover={onHover}
+              onItemClick={onItemClick}
+              setHoveredItem={setHoveredItem}
+              selectedItem={selectedItem}
+            />
+          ) : (
+            <Product
+              key={"product"}
+              content={selectedItem}
+              handleGoBack={handleGoBack}
+              changeSlideVisibility={onSlideVisibilityChange}
+            />
+          )}
+        </AnimatePresence>
 
-      <AnimatePresence mode="wait">
-        {!selectedItem ? (
-          <Products
-            key={"products"}
-            data={data}
-            hoveredItem={hoveredItem}
-            activeCategory={activeCategory}
-            onHover={onHover}
-            onItemClick={onItemClick}
-            setHoveredItem={setHoveredItem}
-            selectedItem={selectedItem}
-          />
-        ) : (
-          <Product
-            key={"product"}
-            content={selectedItem}
-            handleGoBack={handleGoBack}
-            changeSlideVisibility={onSlideVisibilityChange}
-          />
-        )}
-      </AnimatePresence>
-
-      <Slider
-        key={"slider"}
-        content={selectedItem}
-        isSliderVisible={isSliderVisible}
-        changeSlideVisibility={onSlideVisibilityChange}
-      />
+        <Slider
+          key={"slider"}
+          content={selectedItem}
+          isSliderVisible={isSliderVisible}
+          changeSlideVisibility={onSlideVisibilityChange}
+        />
+      </motion.div>
     </motion.div>
   );
 }
